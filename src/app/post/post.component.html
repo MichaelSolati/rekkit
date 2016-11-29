@@ -1,0 +1,14 @@
+<div class="container">
+  <div *ngFor="let post of posts" class="well">
+  <div class="media">
+    <div class="media-left text-center">
+        <img class="media-object" src="http://api.adorable.io/avatars/64/{{post.poster_id}}.png" alt="Profile Image">
+        <p>{{post.postedBy}}</p>
+    </div>
+    <div class="media-body">
+      <h4 class="media-heading text-right">Posted on {{post.postedOn | date:"MM/dd/yy"}}</h4>
+      {{post.message}}
+    </div>
+  </div>
+  </div>
+</div>
