@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-home',
@@ -7,21 +9,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   private threads: Array<any> = [];
-  constructor() {
-    for (let i = 0; i < 10; i++) {
-      this.threads.push(this.makeDummyThread());
-    }
-  }
+  constructor(private http: Http) { }
 
   ngOnInit() {
+    this.getThreads().subscribe((threads) => {
+      this.threads = threads
+    }, (error) =>  {
+      console.log(error);
+    });
   }
 
-  private makeDummyThread() {
-    return {
-      _id: String(Math.floor(Math.random()*256000)),
-      title: "Welcome to the jungle!",
-      postedBy: "Michael Solati",
-      postedOn: new Date()
-    }
+  private getThreads(): Observable<any[]> {
+    return this.http.get("http://rekkit.herokuapp.com/api/threads").map(this.extractData).catch(this.handleError);
+  }
+
+  private extractData(res: Response) {
+    let body = res.json();
+    if (body.error) { throw body.error };
+    return body.data || { };
+  }
+
+  private handleError (error: Response | any) {
+    return Observable.throw(error.code);
   }
 }

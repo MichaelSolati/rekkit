@@ -4,6 +4,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { HomeComponent } from './home/home.component';
 import { PostComponent } from './post/post.component';
+import { CreateThreadComponent } from './create-thread/create-thread.component';
 
 const appRoutes: Routes = [{
   path: '',
@@ -17,6 +18,9 @@ const appRoutes: Routes = [{
   }, {
     path: 'post/:post',
     component: PostComponent
+  }, {
+      path: 'create-thread',
+      component: CreateThreadComponent
   }]
 }];
 
