@@ -1,5 +1,4 @@
 var express = require('express');
-var session = require("express-session");
 var path = require('path');
 var logger = require('morgan');
 var cors = require('cors')
