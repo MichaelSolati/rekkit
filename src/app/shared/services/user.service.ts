@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-// global.localStorage = require('localStorage')
 var store = require('store')
 
 @Injectable()

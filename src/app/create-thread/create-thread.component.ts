@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
+import { environment } from '../../environments/environment';
 import { UserService } from '../shared/services/user.service';
 
 @Component({
@@ -12,6 +13,7 @@ import { UserService } from '../shared/services/user.service';
   styleUrls: ['./create-thread.component.css']
 })
 export class CreateThreadComponent implements OnInit, OnDestroy {
+  private apiUrl: string = environment.apiUrl;
   private processing: boolean = false;
   private threadForm: any = {
     title: "",
@@ -39,9 +41,8 @@ export class CreateThreadComponent implements OnInit, OnDestroy {
     this.processing = true;
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let url = "https://rekkit.herokuapp.com/api/threads";
 
-    this.http.post(url, threadForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
+    this.http.post(this.apiUrl+"threads", threadForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
       this.router.navigate(["/post", response]);
     }, (error) =>  {
       alert(error);

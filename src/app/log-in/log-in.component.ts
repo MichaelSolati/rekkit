@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { Observable } from 'rxjs/Observable';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
+import { environment } from '../../environments/environment';
 import { UserService } from '../shared/services/user.service';
 
 @Component({
@@ -11,6 +12,7 @@ import { UserService } from '../shared/services/user.service';
   styleUrls: ['./log-in.component.css']
 })
 export class LogInComponent {
+  private apiUrl: string = environment.apiUrl;
   private isSigningIn: boolean = true;
   private processing: boolean = false;
   private signInForm: any = {
@@ -24,9 +26,8 @@ export class LogInComponent {
   private signIn(signInForm: any) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let url = "https://rekkit.herokuapp.com/api/users/sign-in";
 
-    this.http.post(url, signInForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
+    this.http.post(this.apiUrl+"users/sign-in", signInForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
       this.userService.setUser(response);
       this.router.navigate(["/"]);
     }, (error) =>  {
@@ -38,9 +39,8 @@ export class LogInComponent {
   private signUp(signInForm: any) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let url = "https://rekkit.herokuapp.com/api/users/sign-up";
 
-    this.http.post(url, signInForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
+    this.http.post(this.apiUrl+"users/sign-up", signInForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
       this.signIn(signInForm);
     }, (error) =>  {
       alert(error);
