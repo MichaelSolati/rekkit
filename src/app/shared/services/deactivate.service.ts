@@ -21,3 +21,4 @@ export class DeactivateGuard implements CanActivate {
     }
     return true;
   }
+}
