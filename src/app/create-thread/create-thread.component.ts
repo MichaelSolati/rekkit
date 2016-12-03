@@ -15,12 +15,8 @@ import { UserService } from '../shared/services/user.service';
 export class CreateThreadComponent implements OnInit, OnDestroy {
   private apiUrl: string = environment.apiUrl;
   private processing: boolean = false;
-  private threadForm: any = {
-    title: "",
-    created_by: ""
-  }
+  private threadForm: any = { title: "", created_by: "" };
   private userSubscription: Subscription;
-
   constructor (private http: Http, private router: Router, private userService: UserService) { }
 
   ngOnInit() {
@@ -43,11 +39,11 @@ export class CreateThreadComponent implements OnInit, OnDestroy {
     let options = new RequestOptions({ headers: headers });
 
     this.http.post(this.apiUrl+"threads", threadForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
-      this.router.navigate(["/post", response]);
+      this.router.navigate(["/thread", response]);
     }, (error) =>  {
       alert(error);
       this.processing = false;
-    })
+    });
   }
 
   private extractData(res: Response) {

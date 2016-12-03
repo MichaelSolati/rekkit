@@ -10,6 +10,7 @@ import { UserService } from '../shared/services/user.service';
   styleUrls: ['./navigation.component.css']
 })
 export class NavigationComponent implements OnInit, OnDestroy {
+  private showDrop: boolean = false;
   private user: any = null;
   private userSubscription: Subscription;
 
@@ -27,8 +28,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   private signOut() {
     if (this.userService.signOut()) {
+      this.toggleNav();
       this.router.navigate(["/"]);
     }
+  }
+
+  private toggleNav() {
+    this.showDrop = !this.showDrop;
   }
 
 }

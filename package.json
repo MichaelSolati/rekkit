@@ -5,7 +5,7 @@
   "angular-cli": {},
   "scripts": {
     "app": "ng serve --env=dev",
-    "deploy": "sh ./deploy.sh",
+    "build": "sh ./build.sh",
     "dev": "concurrently --kill-others \"npm run watch\" \"npm run app\"",
     "env": "sh ./env.sh",
     "server": "node ./app.js",

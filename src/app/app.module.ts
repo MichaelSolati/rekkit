@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { UserService } from './shared/services/user.service';
+import { ActivateGuard } from './shared/services/activate.service';
+import { DeactivateGuard } from './shared/services/deactivate.service';
 
 import { AppComponent } from './app.component';
 import { appRouting } from './app.routes';
@@ -29,7 +31,9 @@ import { CreateThreadComponent } from './create-thread/create-thread.component';
     appRouting
   ],
   providers: [
-    UserService
+    UserService,
+    ActivateGuard,
+    DeactivateGuard
   ],
   bootstrap: [AppComponent]
 })

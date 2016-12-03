@@ -1,8 +1,20 @@
 <div class="container">
   <div class="list-group">
-    <a *ngFor="let thread of threads" [routerLink]="['post', thread.thread_id]" class="list-group-item">
+    <a *ngFor="let thread of threads" [routerLink]="['thread', thread.thread_id]" class="list-group-item">
       <h4 class="list-group-item-heading">{{thread.title}}</h4>
-      <p class="list-group-item-text">Posted on {{thread.created_on | date:"MM/dd/yy"}} by {{thread.created_by}}</p>
+      <p class="list-group-item-text">Posted on {{thread.created_on | date:"MM/dd/yy"}} by {{thread.poster}}</p>
+    </a>
+  </div>
+
+  <div *ngIf="(threads.length === 0) && !user" class="list-group">
+    <a [routerLink]="['log-in']" class="list-group-item">
+      <h4 class="list-group-item-heading">Sign In to be the first post!</h4>
+    </a>
+  </div>
+
+  <div *ngIf="(threads.length === 0) && user" class="list-group">
+    <a [routerLink]="['new-thread']" class="list-group-item">
+      <h4 class="list-group-item-heading">Make the first post!</h4>
     </a>
   </div>
 </div>

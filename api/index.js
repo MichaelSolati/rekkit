@@ -13,7 +13,6 @@ router.get('/', function(req, res) {
 });
 
 /* USERS APIS */
-
 router.post("/users/sign-in", function(req, res) {
   let username = req.body.username || "";
   let password = req.body.password || "";
@@ -71,7 +70,7 @@ router.get("/threads", function(req, res) {
     count = parseInt(count);
   }
 
-  mysql.model.query("SELECT * FROM threads ORDER BY created_on DESC LIMIT ? , ? ", [start, count], function(err, rows) {
+  mysql.model.query("SELECT threads.*, users.name AS poster FROM threads INNER JOIN users ON threads.created_by = users.username ORDER BY created_on DESC LIMIT ? , ? ", [start, count], function(err, rows) {
     let result = {};
     if (err !== null) {
       result.error = err;
@@ -84,9 +83,80 @@ router.get("/threads", function(req, res) {
 });
 
 router.post("/threads", function(req, res) {
-  let title = req.body.title || "";
+  let message = req.body.title || "";
   let created_by = req.body.created_by || "";
+
+  if (message.length > 1024) {
+    message = message.substing(0, 1021)+"...";
+  }
+
+  let title = message;
+  if (title.length > 128) {
+    title = title.substing(0, 125)+"...";
+  }
+
   mysql.model.query("INSERT INTO threads (title, created_by) VALUES (?, ?)", [title, created_by], function(err, rows) {
+    var result = {};
+    if (err !== null) {
+      result.error = err;
+      res.setHeader('content-type', 'text/json');
+      res.send(json_encode(result));
+    } else {
+      let thread_id = rows.insertId;
+      mysql.model.query("INSERT INTO posts (thread_id, message, created_by) VALUES (?, ?, ?)", [thread_id, message, created_by], function(err, rows) {
+        var result = {};
+        if (err !== null) {
+          result.error = err;
+        } else {
+          result.data = thread_id;
+        }
+        res.setHeader('content-type', 'text/json');
+        res.send(json_encode(result));
+      });
+    }
+  });
+});
+
+/* POSTS APIS */
+router.get("/posts/:thread_id", function(req, res) {
+  let thread_id = req.params.thread_id || "";
+  let start = req.query.start;
+  let count = req.query.count;
+
+  if (start === undefined) {
+    start = 0;
+  } else {
+    start = parseInt(start);
+  }
+
+  if (count === undefined) {
+    count = 50;
+  } else {
+    count = parseInt(count);
+  }
+
+  mysql.model.query("SELECT posts.message, posts.created_on, users.name AS poster FROM posts INNER JOIN users ON posts.created_by = users.username WHERE posts.thread_id = ? ORDER BY posts.created_on ASC LIMIT ? , ? ", [thread_id, start, count], function(err, rows) {
+    let result = {};
+    if (err !== null) {
+      result.error = err;
+    } else {
+      result.data = rows;
+    }
+    res.setHeader('content-type', 'text/json');
+    res.send(json_encode(result));
+  });
+});
+
+router.post("/posts", function(req, res) {
+  let thread_id = req.body.thread_id || "";
+  let message = req.body.message || "";
+  let created_by = req.body.created_by || "";
+console.log(thread_id, message, created_by)
+  if (message.length > 1024) {
+    message = message.substing(0, 1021)+"...";
+  }
+
+  mysql.model.query("INSERT INTO posts (thread_id, message, created_by) VALUES (?, ?, ?)", [thread_id, message, created_by], function(err, rows) {
     var result = {};
     if (err !== null) {
       result.error = err;
@@ -96,6 +166,7 @@ router.post("/threads", function(req, res) {
     res.setHeader('content-type', 'text/json');
     res.send(json_encode(result));
   });
+
 });
 
 /* END */

@@ -1,5 +1,8 @@
 import { Routes, RouterModule } from '@angular/router';
 
+import { ActivateGuard } from './shared/services/activate.service';
+import { DeactivateGuard } from './shared/services/deactivate.service';
+
 import { NavigationComponent } from './navigation/navigation.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { HomeComponent } from './home/home.component';
@@ -14,13 +17,15 @@ const appRoutes: Routes = [{
       component: HomeComponent
   }, {
       path: 'log-in',
-      component: LogInComponent
+      component: LogInComponent,
+    canActivate: [DeactivateGuard]
   }, {
-    path: 'post/:post',
+    path: 'thread/:thread_id',
     component: PostComponent
   }, {
-      path: 'create-thread',
-      component: CreateThreadComponent
+      path: 'new-thread',
+      component: CreateThreadComponent,
+    canActivate: [ActivateGuard]
   }]
 }];
 
