@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 export class UserService {
   private apiUrl: string = environment.apiUrl;
   private user: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  private staticUser: any = false;
 
   constructor(private http: Http) {
     this.getCache();
@@ -25,18 +26,49 @@ export class UserService {
     return Observable.throw(error.code);
   }
 
+  private getAdmin(username: string, callback?: any) {
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    this.http.post(this.apiUrl+"admin", {username}, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
+      this.staticUser.is_admin = 1;
+      this.setUser(this.staticUser)
+      if (callback) {
+        callback(null, response);
+      }
+    }, (error) =>  {
+      if (callback) {
+        callback(error, null);
+      }
+    });
+  }
+
   private getCache() {
     let cachedUser = store.get('user');
     if (cachedUser) {
-      this.user.next(cachedUser);
+      this.setUser(cachedUser);
     } else {
-      this.user.next(false);
+      this.setUser(false);
     }
     this.setCache();
   }
 
   public getUser() {
     return this.user;
+  }
+
+  private revokeAdmin(username: string, callback?: any) {
+    this.http.delete(this.apiUrl+`admin?username=${username}`).map(this.extractData).catch(this.handleError).subscribe((response)  => {
+      this.staticUser.is_admin = null;
+      this.setUser(this.staticUser)
+      if (callback) {
+        callback(null, response);
+      }
+    }, (error) =>  {
+      if (callback) {
+        callback(error, null);
+      }
+    });
   }
 
   private setCache() {
@@ -46,6 +78,7 @@ export class UserService {
   }
 
   public setUser(user: any) {
+    this.staticUser = user;
     return this.user.next(user);
   }
 
@@ -55,9 +88,13 @@ export class UserService {
 
     this.http.post(this.apiUrl+"users/sign-in", signInForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
       this.setUser(response);
-      callback(null, response);
+      if (callback) {
+        callback(null, response);
+      }
     }, (error) =>  {
-      callback(error, null);
+      if (callback) {
+        callback(error, null);
+      }
     })
   }
 
@@ -66,14 +103,26 @@ export class UserService {
     let options = new RequestOptions({ headers: headers });
 
     this.http.post(this.apiUrl+"users/sign-up", signInForm, options).map(this.extractData).catch(this.handleError).subscribe((response)  => {
-      callback(null, response)
+      if (callback) {
+        callback(null, response)
+      }
     }, (error) =>  {
-      callback(error, null);
+      if (callback) {
+        callback(error, null);
+      }
     })
   }
 
   public signOut() {
     this.user.next(false);
     return true;
+  }
+
+  public toggleAdmin() {
+    if (this.staticUser.is_admin === 1) {
+      this.revokeAdmin(this.staticUser.username);
+    } else {
+      this.getAdmin(this.staticUser.username);
+    }
   }
 }

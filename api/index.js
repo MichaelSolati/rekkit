@@ -334,5 +334,39 @@ router.get("/profile/:username", function(req, res) {
   } catch (e) {}
 });
 
+/* ADMIN APIS */
+router.post("/admin", function(req, res) {
+  try {
+    let username = req.body.username || "";
+
+    mysql.model.query("INSERT INTO admin (username, is_admin) VALUES (?, ?)", [username, 1], function(err, rows) {
+      let result = {};
+      if (err !== null) {
+        result.error = err;
+      } else {
+        result.data = rows.insertId;
+      }
+      res.setHeader('content-type', 'text/json');
+      res.send(json_encode(result));
+    });
+  } catch (e) {}
+});
+
+router.delete("/admin", function(req, res) {
+  try {
+    let username = req.query.username || "";
+    mysql.model.query("DELETE FROM admin WHERE username = ? ", [username], function(err,rows){ 
+      var result = {};
+      if(err !== null) {
+        result.error = err;
+      } else {
+        result.data = true;
+      }
+      res.setHeader('content-type','text/json');
+      res.send(json_encode(result));
+    });
+  } catch (e) {}
+});
+
 /* END */
 module.exports = router;
