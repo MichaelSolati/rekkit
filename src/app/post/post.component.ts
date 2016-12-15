@@ -26,7 +26,7 @@ export class PostComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private http: Http, private userService: UserService) { }
 
   ngOnInit() {
-    this.threadIdSub = this.route.params.subscribe((params) => {
+    this.threadIdSub = this.route.params.subscribe((params: any) => {
       this.thread_id = params.thread_id;
       this.getPosts().subscribe((posts) => {
         this.posts = posts;
@@ -43,6 +43,27 @@ export class PostComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.threadIdSub.unsubscribe();
     this.userSubscription.unsubscribe();
+  }
+
+  private delete(post, thread, username) {
+    let r = confirm("Are you sure you want to delete this post?");
+    if (r == true) {
+      this.deletePost(post, thread, username).subscribe((response) => {
+        this.getPosts().subscribe((posts) => {
+          this.posts = posts;
+        }, (error) =>  {
+          alert("Could not delete post...");
+        });
+      }, (error) =>  {
+        console.log(error);
+      });
+    } else {
+      alert("Post not deleted");
+    }
+  }
+
+  private deletePost(post_id, thread_id, username): Observable<any[]> {
+    return this.http.delete(this.apiUrl+`posts?post_id=${post_id}&thread_id=${thread_id}&username=${username}`).map(this.extractData).catch(this.handleError);
   }
 
   private extractData(res: Response) {
@@ -66,7 +87,7 @@ export class PostComponent implements OnInit, OnDestroy {
   private newPost () {
     this.processing = true;
 
-    if (this.reply.replace(/\s/g, "").length > 10) {
+    if (this.reply.replace(/\s/g, "").length !== 0) {
       let payload = { message: this.reply, thread_id: this.thread_id, created_by: this.user.username };
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });

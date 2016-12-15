@@ -14,6 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { PostComponent } from './post/post.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { CreateThreadComponent } from './create-thread/create-thread.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CreateThreadComponent } from './create-thread/create-thread.component';
     HomeComponent,
     PostComponent,
     NavigationComponent,
-    CreateThreadComponent
+    CreateThreadComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

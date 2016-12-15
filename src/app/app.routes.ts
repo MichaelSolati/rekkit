@@ -8,6 +8,7 @@ import { LogInComponent } from './log-in/log-in.component';
 import { HomeComponent } from './home/home.component';
 import { PostComponent } from './post/post.component';
 import { CreateThreadComponent } from './create-thread/create-thread.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const appRoutes: Routes = [{
   path: '',
@@ -22,6 +23,9 @@ const appRoutes: Routes = [{
   }, {
     path: 'thread/:thread_id',
     component: PostComponent
+  }, {
+    path: 'profile/:username',
+    component: ProfileComponent
   }, {
       path: 'new-thread',
       component: CreateThreadComponent,

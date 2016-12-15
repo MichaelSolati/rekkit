@@ -24,12 +24,31 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.getThreads().subscribe((threads) => {
-      this.threads = threads
+      this.threads = threads;
     }, (error) =>  { });
   }
 
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
+  }
+
+  private delete(thread, username) {
+    let r = confirm("Are you sure you want to delete this thread?");
+    if (r == true) {
+      this.deleteThread(thread, username).subscribe((response) => {
+        this.getThreads().subscribe((threads) => {
+          this.threads = threads;
+        }, (error) =>  { });
+      }, (error) =>  {
+        console.log(error);
+      });
+    } else {
+      alert("Thread not deleted");
+    }
+  }
+
+  private deleteThread(thread_id, username): Observable<any[]> {
+    return this.http.delete(this.apiUrl+`threads?thread_id=${thread_id}&username=${username}`).map(this.extractData).catch(this.handleError);
   }
 
   private getThreads(): Observable<any[]> {

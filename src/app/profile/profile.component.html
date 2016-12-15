@@ -1,0 +1,24 @@
+<div *ngIf="profile" class="container">
+  <div class="row">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="text-center">{{profile.name}}</h2>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="profile.threads && (profile.threads.length > 0)" class="list-group">
+          <a *ngFor="let thread of profile.threads" [routerLink]="['/', 'thread', thread.thread_id]" class="list-group-item">
+            <h4 class="list-group-item-heading">{{thread.title}}</h4>
+            <p class="list-group-item-text">
+              Posted on {{thread.created_on | date:"MM/dd/yy"}}
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!profile" class="container text-center">
+  <h1>No profile found... Are you sure there is a real person?</h1>
+  <h5><a [routerLink]="['/']">(Back To Home)</a></h5>
+</div>

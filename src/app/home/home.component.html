@@ -1,9 +1,17 @@
 <div class="container">
   <div class="list-group">
-    <a *ngFor="let thread of threads" [routerLink]="['thread', thread.thread_id]" class="list-group-item">
-      <h4 class="list-group-item-heading">{{thread.title}}</h4>
-      <p class="list-group-item-text">Posted on {{thread.created_on | date:"MM/dd/yy"}} by {{thread.poster}}</p>
-    </a>
+    <div *ngFor="let thread of threads" class="list-group-item">
+      <h4 class="list-group-item-heading">
+        <a [routerLink]="['/', 'thread', thread.thread_id]">{{thread.title}}</a>
+        <button (click)="delete(thread.thread_id, user.username)" *ngIf="(thread.created_by === user.username) || (user.is_admin === 1)"  type="button" class="pull-right btn btn-danger">
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        </button>
+      </h4>
+      <p class="list-group-item-text">
+        Posted on {{thread.created_on | date:"MM/dd/yy"}} by
+        <a [routerLink]="['/', 'profile', thread.created_by]">{{thread.poster}}</a>
+      </p>
+    </div>
   </div>
 
   <div *ngIf="(threads.length === 0) && !user" class="list-group">
