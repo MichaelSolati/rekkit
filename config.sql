@@ -1,94 +1,131 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: us-cdbr-iron-east-04.cleardb.net (MySQL 5.5.46-log)
-# Database: heroku_fd36d072b8cfa8c
-# Generation Time: 2016-12-15 22:51:57 +0000
-# ************************************************************
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
+--
+-- Database: `rekkit`
+--
+DROP DATABASE `rekkit`;
+CREATE DATABASE IF NOT EXISTS `rekkit` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `rekkit`;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- --------------------------------------------------------
 
-
-# Dump of table admin
-# ------------------------------------------------------------
+--
+-- Table structure for table `admin`
+--
 
 DROP TABLE IF EXISTS `admin`;
-
 CREATE TABLE `admin` (
   `username` varchar(64) DEFAULT NULL,
-  `is_admin` tinyint(1) DEFAULT NULL,
-  KEY `username` (`username`),
-  CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  `is_admin` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
 
-
-# Dump of table posts
-# ------------------------------------------------------------
+--
+-- Table structure for table `posts`
+--
 
 DROP TABLE IF EXISTS `posts`;
-
 CREATE TABLE `posts` (
-  `post_id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
   `thread_id` int(11) DEFAULT NULL,
   `message` varchar(1024) DEFAULT NULL,
   `created_by` varchar(64) DEFAULT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`post_id`),
-  KEY `thread_id` (`thread_id`),
-  KEY `created_by` (`created_by`),
-  CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`thread_id`) REFERENCES `threads` (`thread_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
 
-
-# Dump of table threads
-# ------------------------------------------------------------
+--
+-- Table structure for table `threads`
+--
 
 DROP TABLE IF EXISTS `threads`;
-
 CREATE TABLE `threads` (
-  `thread_id` int(11) NOT NULL AUTO_INCREMENT,
+  `thread_id` int(11) NOT NULL,
   `title` varchar(128) NOT NULL DEFAULT '',
   `created_by` varchar(64) NOT NULL DEFAULT '',
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`thread_id`),
-  KEY `created_by` (`created_by`),
-  CONSTRAINT `threads_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`username`)
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
 
-
-# Dump of table users
-# ------------------------------------------------------------
+--
+-- Table structure for table `users`
+--
 
 DROP TABLE IF EXISTS `users`;
-
 CREATE TABLE `users` (
   `username` varchar(100) NOT NULL DEFAULT '',
   `password` varchar(100) DEFAULT '',
-  `name` varchar(100) DEFAULT '',
-  PRIMARY KEY (`username`)
+  `name` varchar(100) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Indexes for dumped tables
+--
 
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD KEY `username` (`username`);
 
+--
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`post_id`),
+  ADD KEY `thread_id` (`thread_id`),
+  ADD KEY `created_by` (`created_by`);
 
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+--
+-- Indexes for table `threads`
+--
+ALTER TABLE `threads`
+  ADD PRIMARY KEY (`thread_id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `threads`
+--
+ALTER TABLE `threads`
+  MODIFY `thread_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `admin`
+--
+ALTER TABLE `admin`
+  ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`thread_id`) REFERENCES `threads` (`thread_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `threads`
+--
+ALTER TABLE `threads`
+  ADD CONSTRAINT `threads_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`username`);

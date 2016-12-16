@@ -8,9 +8,9 @@ The first and most important thing is that you need to have `node.js` installed 
 Once both `node.js` and the `angular-cli` are installed you can download all application dependencies by just running in terminal/command prompt `npm install`
 
 ## SQL
-This application is dependent on a SQL server to run. In the root directory there is a file called `config.sql` that you can import into any SQL database you want. That will configure the tables required for the application.
+This application is dependent on a SQL server to run. In the root directory there is a file called `config.sql` that you can import into your SQL server.
 
-THIS DOES NOT CREATE THE DATABASE, ONLY THE TABLES YOU NEED!
+This will create a databse called `rekkit` with all the required tables.
 
 ## Server Environment Variables
 In the root directory of the application you should find a file called `env.sample.sh` (rename it to `env.sh`). Modify the `HOST, USER, PASSWORD, DATABASE` of your SQL server as well as the `PORT` for your API server (defaults to port 3000 for development). Then just run `npm run env` to run the application for development.
